@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#17152f">
+<title>Quartile Quest — Boss Battle</title>
+<style>
+:root{color-scheme:dark;--bg:#100f20;--panel:#1c1a35;--panel2:#262344;--text:#f7f5ff;--muted:#b9b5d3;--gold:#ffd166;--red:#ff647c;--blue:#7c9cff;--green:#68ddb0}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 50% 0,#30275b 0,#17152f 42%,#0e0d1b 100%);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--text);min-height:100vh;padding:18px}
+main{max-width:760px;margin:auto}.top{display:flex;justify-content:space-between;align-items:center;gap:12px}.tag{font-size:.76rem;letter-spacing:.12em;color:var(--gold);font-weight:800}.card{background:linear-gradient(145deg,#242142,#19182f);border:1px solid #48416e;border-radius:22px;padding:18px;margin-top:15px;box-shadow:0 16px 45px #0005}.hero{text-align:center;padding:18px 12px}.boss{font-size:76px;filter:drop-shadow(0 8px 15px #a35cff88);margin:4px}.subtitle{color:var(--muted);font-size:.94rem}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:14px}.stat{background:#ffffff0b;border-radius:14px;padding:11px;text-align:center}.stat b{display:block;font-size:1.3rem}.stat small{color:var(--muted)}.barline{display:flex;justify-content:space-between;margin:12px 0 7px;font-weight:700}.bar{height:13px;border-radius:99px;background:#ffffff18;overflow:hidden}.fill{height:100%;width:100%;background:linear-gradient(90deg,#ff466b,#ff9a72);transition:width .35s}.q{font-size:1.2rem;line-height:1.5;margin:12px 0 16px}.answers{display:grid;gap:9px}.answer{width:100%;text-align:left;background:#ffffff0b;border:1px solid #555078;color:var(--text);padding:13px 14px;border-radius:13px;font-size:1rem;cursor:pointer}.answer.selected{border:2px solid var(--blue);background:#7c9cff22}.answer:disabled{cursor:default;opacity:1}.answer.correct{border-color:var(--green);background:#68ddb022}.answer.wrong{border-color:var(--red);background:#ff647c22}button.primary,.btn{border:0;border-radius:13px;padding:13px 16px;font-size:1rem;font-weight:800;cursor:pointer;background:linear-gradient(100deg,#8b75ff,#5c8cff);color:white;width:100%;margin-top:13px}button:disabled{opacity:.45;cursor:not-allowed}.secondary{background:#ffffff12;border:1px solid #5b557e;color:var(--text);border-radius:12px;padding:10px 12px;cursor:pointer}.feedback{margin-top:13px;background:#ffffff0c;border-radius:13px;padding:13px;line-height:1.5}.hidden{display:none!important}.row{display:flex;justify-content:space-between;align-items:center;gap:10px}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.tabs button{flex:1;min-width:90px}.tabactive{outline:2px solid var(--gold)}.shopitem{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid #ffffff16}.shopitem .desc{flex:1}.shopitem button{width:auto;margin:0}.rank{font-size:2rem;color:var(--gold);font-weight:900}.notice{color:var(--muted);font-size:.82rem;line-height:1.5}.history{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #ffffff12;font-size:.9rem}
+</style>
+</head>
+<body>
+<main>
+ <div class="top"><div><div class="tag">MATH RPG • BOSS BATTLE</div><h1 style="margin:4px 0">QUARTILE QUEST</h1></div><div class="tag">⚔️ SEASON 01</div></div>
+ <section class="card hero">
+  <div class="boss" id="bossArt">👑</div><h2 style="margin:0">THE STATISTICS KING</h2>
+  <div class="subtitle">ตอบคำถามให้ถูกเพื่อโจมตีราชันแห่งสถิติ</div>
+  <div class="barline"><span>❤️ พลังชีวิตบอส</span><span id="bossText">100 / 100</span></div><div class="bar"><div class="fill" id="bossBar"></div></div>
+  <div class="stats">
+   <div class="stat"><b id="hearts">❤️❤️❤️</b><small>หัวใจ</small></div>
+   <div class="stat"><b id="coins">🪙 0</b><small>เหรียญ</small></div>
+   <div class="stat"><b id="combo">🔥 0</b><small>คอมโบ</small></div>
+  </div>
+ </section>
+ <nav class="tabs">
+  <button class="secondary tabactive" data-tab="battle">⚔️ ต่อสู้</button>
+  <button class="secondary" data-tab="shop">🛒 ร้านค้า</button>
+  <button class="secondary" data-tab="rank">🏆 แรงก์</button>
+ </nav>
+ <section class="card" id="battle">
+  <div class="row"><b id="round">คำถาม 1 / 5</b><span class="tag">โจมตี <span id="damage">20</span> HP</span></div>
+  <div class="q" id="question">กดเริ่มเกมเพื่อเข้าสู่การต่อสู้!</div>
+  <div class="answers" id="answers"></div>
+  <div class="feedback hidden" id="feedback"></div>
+  <button class="primary" id="mainBtn">เริ่มการต่อสู้</button>
+  <p class="notice">ตอบถูก: โจมตีบอสและรับ 10 เหรียญ • ตอบผิด: เสียหัวใจ 1 ดวง • โล่ช่วยป้องกันการเสียหัวใจได้ 1 ครั้ง</p>
+ </section>
+ <section class="card hidden" id="shop">
+  <h2 style="margin-top:0">🛒 ร้านค้าไอเทม</h2>
+  <div class="shopitem"><div style="font-size:34px">❤️</div><div class="desc"><b>หัวใจเพิ่ม</b><div class="notice">เพิ่มหัวใจ 1 ดวง (สูงสุด 5)</div><b>30 เหรียญ</b></div><button class="secondary" onclick="buy('heart')">ซื้อ</button></div>
+  <div class="shopitem"><div style="font-size:34px">🛡️</div><div class="desc"><b>Magic Shield</b><div class="notice">ป้องกันการเสียหัวใจครั้งถัดไป</div><b>25 เหรียญ</b></div><button class="secondary" onclick="buy('shield')">ซื้อ</button></div>
+  <div class="shopitem"><div style="font-size:34px">⚔️</div><div class="desc"><b>ดาบพลังพิเศษ</b><div class="notice">เพิ่มพลังโจมตี 10 HP ในข้อต่อไป</div><b>20 เหรียญ</b></div><button class="secondary" onclick="buy('sword')">ซื้อ</button></div>
+  <p class="notice" id="inventory">ไอเทม: ยังไม่มี</p>
+ </section>
+ <section class="card hidden" id="rank">
+  <h2 style="margin-top:0">🏆 แรงก์นักคณิตศาสตร์</h2><div class="rank" id="rankName">BRONZE</div><p id="rankDesc" class="subtitle">เริ่มต้นการผจญภัย!</p>
+  <div class="stats"><div class="stat"><b id="wins">0</b><small>ชนะบอส</small></div><div class="stat"><b id="totalCoins">0</b><small>เหรียญสะสม</small></div><div class="stat"><b id="bestCombo">0</b><small>คอมโบสูงสุด</small></div></div>
+  <h3>ประวัติการต่อสู้</h3><div id="history" class="notice">ยังไม่มีประวัติ</div>
+ </section>
+ <section class="card hidden" id="result"></section>
+ <p class="notice" style="text-align:center;margin:18px 4px">เกมฝึกทักษะคณิตศาสตร์ • ควอไทล์และเปอร์เซ็นต์ไทล์</p>
+</main>
+<script>
+const bank=[
+ {q:"ข้อมูล 2, 4, 6, 8, 10 มี Q2 เท่ากับเท่าไร?",a:["4","6","8","10"],c:1,e:"Q2 คือมัธยฐาน ค่ากลางของข้อมูลที่เรียงลำดับแล้ว คือ 6."},
+ {q:"ข้อมูล 2, 4, 6, 8, 10 มี Q1 เท่ากับเท่าไร? (ใช้มัธยฐานของครึ่งล่าง)",a:["2","3","4","6"],c:1,e:"ครึ่งล่างคือ 2 และ 4 ดังนั้น Q1 = (2+4)÷2 = 3."},
+ {q:"P50 มีความหมายตรงกับข้อใด?",a:["Q1","Q2","Q3","Q4"],c:1,e:"P50 คือมัธยฐาน หรือ Q2."},
+ {q:"Q3 ตรงกับเปอร์เซ็นต์ไทล์ใด?",a:["P25","P50","P75","P100"],c:2,e:"Q3 ตรงกับ P75."},
+ {q:"เปอร์เซ็นต์ไทล์แบ่งข้อมูลออกเป็นกี่ส่วน?",a:["4","10","50","100"],c:3,e:"เปอร์เซ็นต์ไทล์แบ่งข้อมูลเป็น 100 ส่วน."},
+ {q:"Q1 หมายถึงตำแหน่งเปอร์เซ็นต์ไทล์ใด?",a:["P10","P25","P50","P75"],c:1,e:"Q1 คือควอไทล์ที่ 1 หรือ P25."},
+ {q:"ข้อมูล 3, 5, 7, 9, 11 มีมัธยฐานเท่าไร?",a:["5","7","9","11"],c:1,e:"ข้อมูลมี 5 ค่า ค่าตรงกลางคือ 7."},
+ {q:"ถ้าคะแนนอยู่ที่ P80 หมายความว่าอย่างไร?",a:["สูงกว่าหรือเท่ากับ 80% ของข้อมูล","มีคะแนน 80 คะแนน","ต่ำกว่าทุกคน","อยู่ลำดับที่ 80 เท่านั้น"],c:0,e:"P80 หมายถึงมีข้อมูลประมาณ 80% อยู่ที่หรือต่ำกว่าค่านั้น."},
+ {q:"Q2 แบ่งข้อมูลออกเป็นกี่กลุ่มที่มีจำนวนเท่ากันโดยประมาณ?",a:["2","3","4","5"],c:0,e:"มัธยฐานแบ่งข้อมูลเป็นสองส่วน."},
+ {q:"Q1, Q2 และ Q3 เป็นค่าที่ใช้บอกอะไร?",a:["การกระจายตามตำแหน่ง","ค่าเฉลี่ยเท่านั้น","ผลรวม","จำนวนข้อมูลทั้งหมด"],c:0,e:"ควอไทล์ใช้บอกตำแหน่งและการกระจายของข้อมูล."}
+];
+let questions=[],idx=0,hp=3,boss=100,coins=0,combo=0,best=0,shield=0,sword=0,selected=-1,answered=false,started=false,wins=0,totalEarned=0,history=[];
+const $=id=>document.getElementById(id);
+function shuffle(arr){return [...arr].sort(()=>Math.random()-.5)}
+function update(){
+ $('bossText').textContent=`${boss} / 100`; $('bossBar').style.width=boss+'%';
+ $('hearts').textContent='❤️'.repeat(hp)+'🖤'.repeat(5-hp);
+ $('coins').textContent='🪙 '+coins;$('combo').textContent='🔥 '+combo;
+ $('damage').textContent=20+Math.min(combo*5,20)+(sword?10:0);
+ $('inventory').textContent=`ไอเทม: ${shield?'🛡️ โล่ ×'+shield+' ':''}${sword?'⚔️ ดาบพิเศษ ×'+sword:''}`||'ไอเทม: ยังไม่มี';
+ $('wins').textContent=wins;$('totalCoins').textContent=totalEarned;$('bestCombo').textContent=best;
+ let rank=totalEarned>=300?'DIAMOND':totalEarned>=200?'GOLD':totalEarned>=100?'SILVER':'BRONZE';
+ $('rankName').textContent=rank;$('rankDesc').textContent=({BRONZE:'นักผจญภัยฝึกหัด',SILVER:'นักคำนวณผู้ชำนาญ',GOLD:'ปรมาจารย์แห่งสถิติ',DIAMOND:'ตำนานราชันควอไทล์'})[rank];
+ $('history').innerHTML=history.length?history.slice(-8).reverse().map(x=>`<div class="history"><span>${x}</span><span>✓</span></div>`).join(''):'ยังไม่มีประวัติ';
+}
+function start(){questions=shuffle(bank).slice(0,5);idx=0;hp=3;boss=100;combo=0;best=0;selected=-1;answered=false;started=true;$('result').classList.add('hidden');$('battle').classList.remove('hidden');render();update();}
+function render(){
+ const q=questions[idx];$('round').textContent=`คำถาม ${idx+1} / 5`;$('question').textContent=q.q;
+ $('answers').innerHTML='';q.a.forEach((a,j)=>{let b=document.createElement('button');b.className='answer';b.textContent=String.fromCharCode(65+j)+'. '+a;b.onclick=()=>choose(j);$('answers').appendChild(b)});
+ $('feedback').classList.add('hidden');$('mainBtn').textContent='ยืนยันคำตอบ';$('mainBtn').disabled=true;$('mainBtn').onclick=submit;$('mainBtn').classList.remove('hidden');answered=false;selected=-1;update();
+}
+function choose(j){if(answered)return;selected=j;[...$('answers').children].forEach((b,k)=>b.classList.toggle('selected',k===j));$('mainBtn').disabled=false;}
+function submit(){
+ if(selected<0||answered)return;answered=true;const q=questions[idx],ok=selected===q.c;
+ [...$('answers').children].forEach((b,j)=>{b.disabled=true;if(j===q.c)b.classList.add('correct');if(j===selected&&!ok)b.classList.add('wrong')});
+ let msg='';
+ if(ok){let dmg=20+Math.min(combo*5,20)+(sword?10:0);boss=Math.max(0,boss-dmg);combo++;best=Math.max(best,combo);coins+=10+Math.min(combo,5);totalEarned+=10+Math.min(combo,5);if(sword)sword--;msg=`⚔️ ตอบถูก! โจมตีบอส ${dmg} HP และได้รับ ${10+Math.min(combo,5)} เหรียญ`}
+ else{combo=0;if(shield){shield--;msg='🛡️ ตอบผิด แต่โล่ป้องกันหัวใจไว้ให้!'}else{hp=Math.max(0,hp-1);msg='❌ ตอบผิด เสียหัวใจ 1 ดวง'} }
+ $('feedback').innerHTML=`<b>${msg}</b><br>${q.e}`;$('feedback').classList.remove('hidden');$('mainBtn').textContent=(boss===0||hp===0||idx===4)?'ดูผลการต่อสู้':'คำถามถัดไป';$('mainBtn').onclick=next;$('mainBtn').disabled=false;update();
+}
+function next(){if(boss===0||hp===0||idx===4){finish();return}idx++;render();}
+function finish(){
+ const won=boss===0;if(won)wins++;history.push((won?'ชนะ':'แพ้')+' • '+new Date().toLocaleDateString('th-TH')+' • '+coins+' เหรียญ');
+ $('battle').classList.add('hidden');$('result').classList.remove('hidden');
+ $('result').innerHTML=`<div style="text-align:center"><div style="font-size:64px">${won?'🏆':'💀'}</div><h2>${won?'BOSS DEFEATED!':'GAME OVER'}</h2><p>${won?'คุณพิชิตราชันแห่งสถิติสำเร็จ!':'พลังชีวิตหมดหรือหมดคำถามแล้ว ลองใหม่อีกครั้ง!'}</p><h2 style="color:var(--gold)">🪙 ${coins} เหรียญ</h2><p>คอมโบสูงสุด ${best} • บอสเหลือ HP ${boss}</p><button class="primary" onclick="start()">เล่นอีกครั้ง</button></div>`;
+ update();
+}
+function buy(item){if(item==='heart'){if(coins<30)return alert('เหรียญไม่พอ');if(hp>=5)return alert('หัวใจเต็มแล้ว');coins-=30;hp++}
+ if(item==='shield'){if(coins<25)return alert('เหรียญไม่พอ');coins-=25;shield++}
+ if(item==='sword'){if(coins<20)return alert('เหรียญไม่พอ');coins-=20;sword++}
+ update();alert('ซื้อไอเทมสำเร็จ!');}
+document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-tab]').forEach(x=>x.classList.remove('tabactive'));b.classList.add('tabactive');['battle','shop','rank'].forEach(id=>$(id).classList.toggle('hidden',id!==b.dataset.tab));});
+$('mainBtn').onclick=start;update();
+</script>
+</body>
+</html>
